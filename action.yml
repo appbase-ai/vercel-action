@@ -1,73 +1,45 @@
-name: 'Vercel Action'
-description: 'This action make a deployment with github actions instead of Vercel builder.'
+name: 'Get and Alias Vercel Preview URL'
+description: 'Get preview URL of a Vercel deployment and alias it automatically'
+branding:
+  icon: activity
+  color: gray-dark
+author: 'justInCaseTechnologies'
 inputs:
-  vercel-token:
-    description: 'Vercel token'
+  vercel_access_token:
+    description: 'https://vercel.com/docs/rest-api#introduction/api-basics/authentication/creating-an-access-token'
     required: true
-  vercel-args:
-    description: ''
+  vercel_project_id:
+    description: 'Get your Project ID from project settings in Vercel management console'
+    required: true
+  vercel_team_id:
+    description: 'https://vercel.com/docs/rest-api#introduction/api-basics/authentication/accessing-resources-owned-by-a-team'
     required: false
-    default: ''
-  github-comment:
+  alias_template:
+    description: 'template of alias preview url. eg: {random}.e2e-test.mysite.com'
     required: false
-    default: 'true'
-    description: 'if you want to comment on pr and commit, set true, default: true'
-  github-token:
+  token:
+    description: 'https://docs.github.com/en/actions/security-guides/automatic-token-authentication#about-the-github_token-secret'
     required: false
-    description: 'if you want to comment on pr and commit, set token'
-  github-deployment:
+    default: ${{ github.token }}
+  retry_times:
+    description: 'Max retry times for waiting deployment(default: 18)'
     required: false
-    default: 'false'
-    description: 'if you want to create github deployment, set true, default: false'
-  working-directory:
+    default: 18
+  interval:
+    description: 'Time span (ms) waiting between requests to the Vercel API(default: 10000ms)'
     required: false
-    description: the working directory
-  vercel-project-id:
+    default: 10000
+  fail_when_cancelled:
+    description: 'Automatically fail if deployment of Vercel is cancelled(default: true)'
     required: false
-    description: 'Vercel CLI 17+, ❗️  The `name` property in vercel.json is deprecated (https://zeit.ink/5F)'
-  vercel-org-id:
-    required: false
-    description: 'Vercel CLI 17+, ❗️  The `name` property in vercel.json is deprecated (https://zeit.ink/5F)'
-  vercel-project-name:
-    required: false
-    description: "The name of the project; if absent we'll use the `vercel inspect` command to determine."
-  vercel-version:
-    required: false
-    description: "vercel-cli package version"
-  scope:
-    required: false
-    description: 'If you are work in team scope, you should set this value to your team id.'
-  zeit-token:
-    description: 'zeit.co token'
-    required: false
-    deprecationMessage: 'Zeit is now Vercel. Use "vercel-token" instead'
-  now-args:
-    description: ''
-    required: false
-    default: ''
-    deprecationMessage: 'Zeit is now Vercel. Use "vercel-args" instead.'
-  now-project-id:
-    required: false
-    description: 'Vercel CLI 17+, ❗️  The `name` property in vercel.json is deprecated (https://zeit.ink/5F)'
-    deprecationMessage: 'Zeit is now Vercel. Use "vercel-project-id" instead.'
-  now-org-id:
-    required: false
-    description: 'Vercel CLI 17+, ❗️  The `name` property in vercel.json is deprecated (https://zeit.ink/5F)'
-    deprecationMessage: 'Zeit is now Vercel. Use "vercel-org-id" instead.'
-  alias-domains:
-    required: false
-    description: 'You can assign a domain to this deployment. Please note that this domain must have been configured in the project. You can use pull request number via `{{PR_NUMBER}}` and branch via `{{BRANCH}}`'
-    default: ''
-
+    default: true
 outputs:
-  preview-url:
-    description: 'deployment preview URL'
-  preview-name:
-    description: 'deployment preview name'
+  preview_url_alias:
+    description: 'Alias of Vercel Preview URL'
+  preview_url_origin:
+    description: 'Original Vercel Preview URL'
+  status:
+    description: 'Status of the Vercel deployment'
 runs:
   using: 'node16'
   main: 'dist/index.js'
-
-branding:
-  icon: 'triangle'
-  color: 'white'
