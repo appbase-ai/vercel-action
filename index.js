@@ -1,4 +1,3 @@
-const { stripIndents } = require('common-tags');
 const core = require('@actions/core');
 const github = require('@actions/github');
 const { execSync } = require('child_process');
@@ -18,7 +17,6 @@ const generated_url = core.getInput('github_deployment_generated', {
 const vercel_team_id = core.getInput('vercel_team_id');
 const aliasTemplate = core.getInput('alias_template');
 const vercel_scope = core.getInput('scope');
-////
 
 // Vercel
 function getVercelBin() {
@@ -26,42 +24,71 @@ function getVercelBin() {
   return `vercel@${fallback}`;
 }
 
-
 const vercelScope = core.getInput('scope');
-
 
 const vercelBin = getVercelBin();
 
 async function setEnv() {
   core.info('set environment for vercel cli');
-  if (vercelOrgId) {
+  if (vercel_team_id) {
     core.info('set env variable : VERCEL_ORG_ID');
     core.exportVariable('VERCEL_ORG_ID', vercel_team_id);
   }
-  if (vercelProjectId) {
+  if (vercel_project_id) {
     core.info('set env variable : VERCEL_PROJECT_ID');
     core.exportVariable('VERCEL_PROJECT_ID', vercel_project_id);
   }
 }
 
+function retry(fn, retries) {
+  async function attempt(retry) {
+    try {
+      return await fn();
+    } catch (error) {
+      if (retry > retries) {
+        throw error;
+      } else {
+        core.info(`retrying: attempt ${retry + 1} / ${retries + 1}`);
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+        return attempt(retry + 1);
+      }
+    }
+  }
+  return attempt(1);
+}
+
 async function aliasDomainsToDeployment(deploymentUrl) {
+  let subdomain;
   if (!deploymentUrl) {
     core.error('deployment url is null');
   }
-
+  const args = ['-t', vercel_access_token];
   if (vercel_scope) {
     core.info('using scope');
     args.push('--scope', vercel_scope);
   }
-  const promises = aliasDomains.map((domain) =>
-    retry(
-      () =>
-        exec.exec('npx', [vercelBin, ...args, 'alias', deploymentUrl, domain]),
-      2,
-    ),
-  );
 
-  await Promise.all(promises);
+  switch (context.actor) {
+    case 'maceip':
+      subdomain = 'ryan';
+      break;
+    case 'lincicomb':
+      subdomain = 'berk';
+      break;
+    case 'mmajoris':
+      subdomain = 'mike';
+      break;
+    default:
+      subdomain = 'preview';
+  }
+
+  let domain = `${subdomain}.${aliasTemplate}`;
+
+  await retry(
+    () =>
+      exec.exec('npx', [vercelBin, ...args, 'alias', deploymentUrl, domain]),
+    2,
+  );
 }
 
 async function run() {
