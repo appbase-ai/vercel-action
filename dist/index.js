@@ -32540,7 +32540,7 @@ const vercel_scope = core.getInput('scope');
 // Vercel
 function getVercelBin() {
   const fallback = packageJSON.dependencies.vercel;
-  return `vercel@${input || fallback}`;
+  return `vercel@${fallback}`;
 }
 
 
@@ -32592,7 +32592,7 @@ async function run() {
   let { sha } = context;
   await setEnv();
 
-  await aliasDomainsToDeployment(deploymentUrl);
+  await aliasDomainsToDeployment(generated_url);
 
   run().catch((error) => {
     core.setFailed(error.message);
