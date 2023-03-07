@@ -75,7 +75,7 @@ async function run() {
   let { sha } = context;
   await setEnv();
 
-  await aliasDomainsToDeployment(deploymentUrl);
+  await aliasDomainsToDeployment(generated_url);
 
   run().catch((error) => {
     core.setFailed(error.message);
