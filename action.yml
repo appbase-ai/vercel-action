@@ -3,7 +3,7 @@ description: 'Get preview URL of a Vercel deployment and alias it automatically'
 branding:
   icon: activity
   color: gray-dark
-author: 'justInCaseTechnologies'
+author: 'maceip'
 inputs:
   vercel_access_token:
     description: 'https://vercel.com/docs/rest-api#introduction/api-basics/authentication/creating-an-access-token'
@@ -17,22 +17,15 @@ inputs:
   alias_template:
     description: 'template of alias preview url. eg: {random}.e2e-test.mysite.com'
     required: false
-  token:
+  scope:
     description: 'https://docs.github.com/en/actions/security-guides/automatic-token-authentication#about-the-github_token-secret'
     required: false
-    default: ${{ github.token }}
-  retry_times:
-    description: 'Max retry times for waiting deployment(default: 18)'
-    required: false
-    default: 18
-  interval:
-    description: 'Time span (ms) waiting between requests to the Vercel API(default: 10000ms)'
-    required: false
-    default: 10000
-  fail_when_cancelled:
-    description: 'Automatically fail if deployment of Vercel is cancelled(default: true)'
-    required: false
-    default: true
+    default: 'appbase-ai'
+  github_deployment_generated:
+  required: true
+
+
+
 outputs:
   preview_url_alias:
     description: 'Alias of Vercel Preview URL'
