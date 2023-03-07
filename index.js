@@ -23,7 +23,7 @@ const vercel_scope = core.getInput('scope');
 // Vercel
 function getVercelBin() {
   const fallback = packageJSON.dependencies.vercel;
-  return `vercel@${input || fallback}`;
+  return `vercel@${fallback}`;
 }
 
 
