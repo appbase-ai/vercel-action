@@ -22,17 +22,13 @@ const vercel_scope = core.getInput('scope');
 
 // Vercel
 function getVercelBin() {
-  const input = core.getInput('vercel-version');
   const fallback = packageJSON.dependencies.vercel;
   return `vercel@${input || fallback}`;
 }
 
-const vercelToken = core.getInput('vercel-token', { required: true });
-const vercelArgs = core.getInput('vercel-args');
-const vercelOrgId = core.getInput('vercel-org-id');
-const vercelProjectId = core.getInput('vercel-project-id');
+
 const vercelScope = core.getInput('scope');
-const vercelProjectName = core.getInput('vercel-project-name');
+
 
 const vercelBin = getVercelBin();
 
