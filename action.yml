@@ -16,15 +16,17 @@ inputs:
     required: false
   alias_template:
     description: 'template of alias preview url. eg: {random}.e2e-test.mysite.com'
-    required: false
+    required: true
+    default: 'preview.snowybot.com'
+
   scope:
     description: 'https://docs.github.com/en/actions/security-guides/automatic-token-authentication#about-the-github_token-secret'
     required: false
     default: 'appbase-ai'
   github_deployment_generated:
-  required: true
-
-
+    description: 'url created automatically by vercel/gh'
+    required: true
+    default: ''
 
 outputs:
   preview_url_alias:
