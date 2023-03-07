@@ -4,6 +4,7 @@ const github = require('@actions/github');
 const { execSync } = require('child_process');
 const exec = require('@actions/exec');
 const packageJSON = require('./package.json');
+const { context } = github;
 
 const vercel_access_token = core.getInput('vercel_access_token', {
   required: true,
