@@ -5,28 +5,24 @@ const exec = require('@actions/exec');
 const packageJSON = require('./package.json');
 const { context } = github;
 
+
 const vercel_access_token = core.getInput('vercel_access_token', {
-  // required: true,
+   required: true,
 });
+
 const vercel_project_id = core.getInput('vercel_project_id', {
-  //required: true,
+  required: true,
 });
 const generated_url = core.getInput('github_deployment_generated', {
-  // required: true,
+   required: true,
 });
-const vercel_team_id = core.getInput('vercel_team_id');
+
+
 const aliasTemplate = core.getInput('alias_template');
 const vercel_scope = core.getInput('scope');
 
-// Vercel
-function getVercelBin() {
-  const fallback = packageJSON.dependencies.vercel;
-  return `vercel@${fallback}`;
-}
 
-const vercelScope = core.getInput('scope');
 
-const vercelBin = getVercelBin();
 
 async function setEnv() {
   core.info('set environment for vercel cli');
@@ -40,22 +36,6 @@ async function setEnv() {
   }
 }
 
-function retry(fn, retries) {
-  async function attempt(retry) {
-    try {
-      return await fn();
-    } catch (error) {
-      if (retry > retries) {
-        throw error;
-      } else {
-        core.info(`retrying: attempt ${retry + 1} / ${retries + 1}`);
-        await new Promise((resolve) => setTimeout(resolve, 3000));
-        return attempt(retry + 1);
-      }
-    }
-  }
-  return attempt(1);
-}
 
 async function aliasDomainsToDeployment(deploymentUrl) {
   let subdomain;

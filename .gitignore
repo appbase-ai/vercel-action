@@ -1,6 +1,6 @@
 # comment this out distribution branches
 .idea
-
+node_modules/
 .now
 .vercel
 
