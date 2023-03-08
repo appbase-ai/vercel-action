@@ -1,28 +1,21 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
-const { execSync } = require('child_process');
 const exec = require('@actions/exec');
-const packageJSON = require('./package.json');
 const { context } = github;
 
-
 const vercel_access_token = core.getInput('vercel_access_token', {
-   required: true,
+  required: true,
 });
 
 const vercel_project_id = core.getInput('vercel_project_id', {
   required: true,
 });
 const generated_url = core.getInput('github_deployment_generated', {
-   required: true,
+  required: true,
 });
-
 
 const aliasTemplate = core.getInput('alias_template');
 const vercel_scope = core.getInput('scope');
-
-
-
 
 async function setEnv() {
   core.info('set environment for vercel cli');
@@ -35,7 +28,6 @@ async function setEnv() {
     core.exportVariable('VERCEL_PROJECT_ID', vercel_project_id);
   }
 }
-
 
 async function aliasDomainsToDeployment(deploymentUrl) {
   let subdomain;
@@ -89,19 +81,13 @@ async function aliasDomainsToDeployment(deploymentUrl) {
 }
 
 async function run() {
-  core.debug(`action : ${context.action}`);
-  core.debug(`ref : ${context.ref}`);
-  core.debug(`eventName : ${context.eventName}`);
-  core.debug(`actor : ${context.actor}`);
-  core.debug(`sha : ${context.sha}`);
-  core.debug(`workflow : ${context.workflow}`);
-  let { ref } = context;
-  let { sha } = context;
-  await setEnv();
+  try {
+    await setEnv();
 
-  await aliasDomainsToDeployment(generated_url);
-
-  run().catch((error) => {
-    core.setFailed(error.message);
-  });
+    await aliasDomainsToDeployment(generated_url);
+  } catch (error) {
+    if (error instanceof Error) core.setFailed(error.message);
+  }
 }
+
+run();
