@@ -10,6 +10,9 @@ const vercel_access_token = core.getInput('vercel_access_token', {
 const vercel_project_id = core.getInput('vercel_project_id', {
   required: true,
 });
+const vercel_team_id = core.getInput('vercel_project_id', {
+  required: true,
+});
 const generated_url = core.getInput('github_deployment_generated', {
   required: true,
 });
