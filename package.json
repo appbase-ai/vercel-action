@@ -17,6 +17,7 @@
     "lint": "eslint index.js",
     "start": "node ./index.js",
     "package": "ncc build index.js -o dist",
+    "prepare": "ncc build index.js -o dist --source-map --license licenses.txt",
     "test": "jest",
     "format": "prettier --write index.js",
     "format-check": "prettier --check index.js",

@@ -6,13 +6,13 @@ const packageJSON = require('./package.json');
 const { context } = github;
 
 const vercel_access_token = core.getInput('vercel_access_token', {
-  required: true,
+  // required: true,
 });
 const vercel_project_id = core.getInput('vercel_project_id', {
-  required: true,
+  //required: true,
 });
 const generated_url = core.getInput('github_deployment_generated', {
-  required: true,
+  // required: true,
 });
 const vercel_team_id = core.getInput('vercel_team_id');
 const aliasTemplate = core.getInput('alias_template');
@@ -59,6 +59,19 @@ function retry(fn, retries) {
 
 async function aliasDomainsToDeployment(deploymentUrl) {
   let subdomain;
+  let myOutput = '';
+  let myError = '';
+  const options = {};
+  options.listeners = {
+    stdout: (data) => {
+      // eslint-disable-next-line no-unused-vars
+      myOutput += data.toString();
+    },
+    stderr: (data) => {
+      myError += data.toString();
+    },
+  };
+
   if (!deploymentUrl) {
     core.error('deployment url is null');
   }
@@ -83,12 +96,16 @@ async function aliasDomainsToDeployment(deploymentUrl) {
   }
 
   let domain = `${subdomain}.${aliasTemplate}`;
-
-  await retry(
-    () =>
-      exec.exec('npx', [vercelBin, ...args, 'alias', deploymentUrl, domain]),
-    2,
+  core.info(`linking: ${domain} to: ${deploymentUrl}`);
+  const response = await exec.exec(
+    'npx',
+    ['vercel', ...args, 'alias', deploymentUrl, domain],
+    options,
   );
+
+  core.info(response);
+  core.error(myError);
+  core.info(myOutput);
 }
 
 async function run() {

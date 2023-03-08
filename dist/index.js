@@ -1,4 +1,4 @@
-/******/ (() => { // webpackBootstrap
+require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
 /***/ 7351:
@@ -30760,7 +30760,7 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"name":"vercel-action","private":true,"license":"MIT","repository":{"type":"git","url":"https://github.com/amondnet/vercel-action"},"author":{"name":"Minsu Lee","email":"amond@amond.net","url":"https://amond.dev"},"version":"v1","main":"index.js","scripts":{"lint":"eslint index.js","start":"node ./index.js","package":"ncc build index.js -o dist","test":"jest","format":"prettier --write index.js","format-check":"prettier --check index.js","all":"npm run format && npm run lint && npm run package && npm test"},"dependencies":{"@actions/core":"^1.10.0","@actions/exec":"^1.0.3","@actions/github":"^2.1.1","@octokit/webhooks":"latest","axios":"~0.18.1","common-tags":"^1.8.0","vercel":"^28.16.15"},"devDependencies":{"@vercel/ncc":"^0.36.1","eslint":"^8.35.0","eslint-config-airbnb":"^19.0.4","eslint-config-prettier":"^8.6.0","eslint-plugin-import":"^2.27.5","eslint-plugin-jsx-a11y":"^6.7.1","eslint-plugin-prettier":"^4.2.1","eslint-plugin-react":"^7.32.2","eslint-plugin-react-hooks":"^4.6.0","jest":"^29.4.0","prettier":"^2.8.3"},"engines":{"node":"v16"},"keywords":["GitHub","Actions","Vercel","Zeit","Now"]}');
+module.exports = JSON.parse('{"name":"vercel-action","private":true,"license":"MIT","repository":{"type":"git","url":"https://github.com/amondnet/vercel-action"},"author":{"name":"Minsu Lee","email":"amond@amond.net","url":"https://amond.dev"},"version":"v1","main":"index.js","scripts":{"lint":"eslint index.js","start":"node ./index.js","package":"ncc build index.js -o dist","prepare":"ncc build index.js -o dist --source-map --license licenses.txt","test":"jest","format":"prettier --write index.js","format-check":"prettier --check index.js","all":"npm run format && npm run lint && npm run package && npm test"},"dependencies":{"@actions/core":"^1.10.0","@actions/exec":"^1.0.3","@actions/github":"^2.1.1","@octokit/webhooks":"latest","axios":"~0.18.1","common-tags":"^1.8.0","vercel":"^28.16.15"},"devDependencies":{"@vercel/ncc":"^0.36.1","eslint":"^8.35.0","eslint-config-airbnb":"^19.0.4","eslint-config-prettier":"^8.6.0","eslint-plugin-import":"^2.27.5","eslint-plugin-jsx-a11y":"^6.7.1","eslint-plugin-prettier":"^4.2.1","eslint-plugin-react":"^7.32.2","eslint-plugin-react-hooks":"^4.6.0","jest":"^29.4.0","prettier":"^2.8.3"},"engines":{"node":"v16"},"keywords":["GitHub","Actions","Vercel","Zeit","Now"]}');
 
 /***/ })
 
@@ -30813,13 +30813,13 @@ const packageJSON = __nccwpck_require__(4147);
 const { context } = github;
 
 const vercel_access_token = core.getInput('vercel_access_token', {
-  required: true,
+  // required: true,
 });
 const vercel_project_id = core.getInput('vercel_project_id', {
-  required: true,
+  //required: true,
 });
 const generated_url = core.getInput('github_deployment_generated', {
-  required: true,
+  // required: true,
 });
 const vercel_team_id = core.getInput('vercel_team_id');
 const aliasTemplate = core.getInput('alias_template');
@@ -30866,6 +30866,19 @@ function retry(fn, retries) {
 
 async function aliasDomainsToDeployment(deploymentUrl) {
   let subdomain;
+  let myOutput = '';
+  let myError = '';
+  const options = {};
+  options.listeners = {
+    stdout: (data) => {
+      // eslint-disable-next-line no-unused-vars
+      myOutput += data.toString();
+    },
+    stderr: (data) => {
+      myError += data.toString();
+    },
+  };
+
   if (!deploymentUrl) {
     core.error('deployment url is null');
   }
@@ -30890,12 +30903,16 @@ async function aliasDomainsToDeployment(deploymentUrl) {
   }
 
   let domain = `${subdomain}.${aliasTemplate}`;
-
-  await retry(
-    () =>
-      exec.exec('npx', [vercelBin, ...args, 'alias', deploymentUrl, domain]),
-    2,
+  core.info(`linking: ${domain} to: ${deploymentUrl}`);
+  const response = await exec.exec(
+    'npx',
+    ['vercel', ...args, 'alias', deploymentUrl, domain],
+    options,
   );
+
+  core.info(response);
+  core.error(myError);
+  core.info(myOutput);
 }
 
 async function run() {
@@ -30921,3 +30938,4 @@ async function run() {
 module.exports = __webpack_exports__;
 /******/ })()
 ;
+//# sourceMappingURL=index.js.map
