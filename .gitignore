@@ -1,11 +1,9 @@
 # comment this out distribution branches
-node_modules
 .idea
 
 .now
 .vercel
 
-node_modules/
 
 # Editors
 .vscode

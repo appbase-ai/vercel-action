@@ -30,6 +30,7 @@
     "@octokit/webhooks": "latest",
     "axios": "~0.18.1",
     "common-tags": "^1.8.0",
+    "encoding": "^0.1.13",
     "vercel": "^28.16.15"
   },
   "devDependencies": {
