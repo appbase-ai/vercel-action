@@ -2,32 +2,29 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 const exec = require('@actions/exec');
 const { context } = github;
-import { Octokit } from 'octokit';
+const { request } = require('@octokit/request');
 
 const ref_token = core.getInput('ref_token', {
   required: true,
 });
-const octokit = new Octokit({ auth: ref_token });
 
 const ref_sha = core.getInput('ref_sha', {
   required: true,
 });
 
 async function getAuthor() {
-  const { sharef } = await octokit
-    .request('GET /repos/{owner}/{repo}/commits/{ref}', {
-      headers: {
-        authorization: `token ${ref_token}`,
-        'X-GitHub-Api-Version': '2022-11-28',
-      },
-      owner: 'appbase-ai',
-      repo: 'synapps',
-      ref: ref_sha,
-    })
-    .catch((error) => {
-      core.setFailed(error.status);
-      return new Error();
-    });
+  const { sharef } = await request('GET /repos/{owner}/{repo}/commits/{ref}', {
+    headers: {
+      authorization: `token ${ref_token}`,
+      'X-GitHub-Api-Version': '2022-11-28',
+    },
+    owner: 'appbase-ai',
+    repo: 'synapps',
+    ref: ref_sha,
+  }).catch((error) => {
+    core.setFailed(error.status);
+    return new Error();
+  });
 
   return sharef.data.author.login;
 }
