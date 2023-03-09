@@ -29,7 +29,6 @@
     "@actions/github": "^2.1.1",
     "@octokit/request": "^6.2.3",
     "@octokit/webhooks": "latest",
-    "axios": "~0.18.1",
     "common-tags": "^1.8.0",
     "encoding": "^0.1.13",
     "octokit": "^2.0.14",
