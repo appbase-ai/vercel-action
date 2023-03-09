@@ -24,7 +24,7 @@ async function getAuthor() {
 
   axios(config).then((resp) => {
     const author = resp.data?.author?.login;
-    core.warn("author: ", author);
+    core.notice("author: ", author);
     return author;
   });
 }
