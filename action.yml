@@ -18,6 +18,14 @@ inputs:
     description: 'template of alias preview url. eg: {random}.e2e-test.mysite.com'
     required: true
     default: 'preview.snowybot.com'
+  ref_token:
+    description: 'template of alias preview url. eg: {random}.e2e-test.mysite.com'
+    required: true
+    default: ''
+  ref_sha:
+    description: 'template of alias preview url. eg: {random}.e2e-test.mysite.com'
+    required: true
+    default: ''
 
   scope:
     description: 'https://docs.github.com/en/actions/security-guides/automatic-token-authentication#about-the-github_token-secret'
