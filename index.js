@@ -2,8 +2,7 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 const exec = require('@actions/exec');
 const { context } = github;
-const { request } = require('@octokit/request');
-
+const axios = require('axios');
 const ref_token = core.getInput('ref_token', {
   required: true,
 });
@@ -13,20 +12,19 @@ const ref_sha = core.getInput('ref_sha', {
 });
 
 async function getAuthor() {
-  const { sharef } = await request('GET /repos/{owner}/{repo}/commits/{ref}', {
+  const config = {
+    method: 'get',
+    url: `https://api.github.com/repos/appbase-ai/synapps/commits/${ref_sha}`,
     headers: {
-      authorization: `token ${ref_token}`,
+      Authorization: `Bearer ${ref_token}`,
       'X-GitHub-Api-Version': '2022-11-28',
+      Accept: 'application/vnd.github+json',
     },
-    owner: 'appbase-ai',
-    repo: 'synapps',
-    ref: ref_sha,
-  }).catch((error) => {
-    core.setFailed(error.status);
-    return new Error();
-  });
+  };
 
-  return sharef.data.author.login;
+  axios(config).then((resp) => {
+    return resp.data.author.login;
+  });
 }
 
 const vercel_access_token = core.getInput('vercel_access_token', {
