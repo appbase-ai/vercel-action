@@ -41333,7 +41333,7 @@ const ref_sha = core.getInput('ref_sha', {
 async function getAuthor() {
   const config = {
     method: 'get',
-    url: `https://api.github.com/repos/appbase-ai/synapps/branches/${ref_sha}`,
+    url: `https://api.github.com/repos/appbase-ai/synapps/commits/${ref_sha}`,
     headers: {
       Authorization: `Bearer ${ref_token}`,
       'X-GitHub-Api-Version': '2022-11-28',
@@ -41342,7 +41342,7 @@ async function getAuthor() {
   };
 
   axios(config).then((resp) => {
-    const author = resp.data?.author?.login;
+    const author = resp.data?.commit?.author?.email;
     core.notice("author: ", author);
     return author;
   });
@@ -41402,7 +41402,7 @@ async function aliasDomainsToDeployment(deploymentUrl, author) {
   }
 
   switch (author) {
-    case 'maceip':
+    case 'ryan.macarthur@gmail.com':
       subdomain = 'ryan';
       break;
     case 'lincicomb':
@@ -41414,7 +41414,8 @@ async function aliasDomainsToDeployment(deploymentUrl, author) {
     default:
       subdomain = 'preview';
   }
- let domain = subdomain === 'preview' ? `${ref_sha}.${aliasTemplate}` : `${subdomain}.${aliasTemplate}`
+ //let domain = subdomain === 'preview' ? `${subdomain}.${aliasTemplate}` : `${subdomain}.${aliasTemplate}`;
+  let domain = `${subdomain}.${aliasTemplate}`;
   core.info(`linking: ${domain} to: ${deploymentUrl}`);
   const response = await exec.exec(
     'npx',
